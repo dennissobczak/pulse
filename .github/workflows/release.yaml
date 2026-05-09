@@ -16,10 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go 1.26.7 #${{ matrix.go-version }}
+      - name: Setup Go 1.26 #${{ matrix.go-version }}
         uses: actions/setup-go@v6
         with:
-          go-version: '1.26.7' #${{ matrix.go-version }}
+          go-version: '1.26' #${{ matrix.go-version }}
           #cache-dependency-path: src/go.mod
       # You can test your matrix by printing the current Go version
 
