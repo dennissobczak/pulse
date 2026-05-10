@@ -1,17 +1,17 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"time"
+  "context"
+  "fmt"
+  "log"
+  "time"
 
-	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+  appsv1 "k8s.io/api/apps/v1"
+  corev1 "k8s.io/api/core/v1"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  "k8s.io/apimachinery/pkg/util/intstr"
+  "k8s.io/client-go/kubernetes"
+  "k8s.io/client-go/tools/clientcmd"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	namespace := "default"
-	image := "dnsobc/api-gateway:250313" // Change this to your desired image
+	image := "dnsobc/api-gateway:250320" // Change this to your desired image
 	deploymentName := "image-pull-test"
 
 	// Define deployment spec
