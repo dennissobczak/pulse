@@ -6,72 +6,31 @@ import (
   "log"
   "time"
 
-  appsv1 "k8s.io/api/apps/v1"
+  k8sConfigLoader "pulse/k8s_config_loader"
+  k8sModels "pulse/k8s_models"
+
+//  appsv1 "k8s.io/api/apps/v1"
   corev1 "k8s.io/api/core/v1"
   metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-  "k8s.io/apimachinery/pkg/util/intstr"
-  "k8s.io/client-go/kubernetes"
-  "k8s.io/client-go/tools/clientcmd"
+//  "k8s.io/apimachinery/pkg/util/intstr"
+//  "k8s.io/client-go/kubernetes"
+//  "k8s.io/client-go/tools/clientcmd"
 )
 
 func main() {
-	// Load Kubernetes configuration from kubeconfig file
-	config, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
-	if err != nil {
-		log.Fatalf("Failed to load kubeconfig: %v", err)
-	}
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		log.Fatalf("Failed to create Kubernetes client: %v", err)
-	}
+  clientset := k8sConfigLoader.InitK8sClient()
 
-	namespace := "default"
-	image := "dnsobc/api-gateway:250320" // Change this to your desired image
-	deploymentName := "image-pull-test"
+  namespace := "default"
+//  image := "dnsobc/api-gateway:250320" // Change this to your desired image
+  deploymentName := "image-pull-test"
 
-	// Define deployment spec
-	deployment := &appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: deploymentName,
-		},
-		Spec: appsv1.DeploymentSpec{
-			Replicas: int32Ptr(1),
-			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{"app": deploymentName},
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{"app": deploymentName},
-				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{
-						{
-							Name:  "test-container",
-							Image: image,
-//							Command: []string{"sh", "-c", "echo Start; sleep 10"}, // Simulate startup
-							ReadinessProbe: &corev1.Probe{
-								PeriodSeconds:    1,
-								InitialDelaySeconds: 2,
-								ProbeHandler: corev1.ProbeHandler{
-									HTTPGet: &corev1.HTTPGetAction{
-										Path:   "/actuator/health",
-										Port:   intstr.FromInt(8080),
-										Scheme: corev1.URISchemeHTTP,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
+  deployment := k8sModels.InitDeployment()
 
 	// Record start time
 	startTime := time.Now()
 
 	// Create deployment
-	_, err = clientset.AppsV1().Deployments(namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+	_, err := clientset.AppsV1().Deployments(namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 	if err != nil {
 		log.Fatalf("Failed to create deployment: %v", err)
 	}
@@ -108,5 +67,5 @@ func main() {
 	}
 }
 
-func int32Ptr(i int32) *int32 { return &i }
+//func int32Ptr(i int32) *int32 { return &i }
 
